@@ -1,5 +1,7 @@
 # 자세 지킴이
 
+### 👉 [앱 열기: blindout15-collab.github.io/posture](https://blindout15-collab.github.io/posture/)
+
 웹캠이나 휴대폰 전면 카메라로 얼굴을 추적해서 **화면과 너무 가까워지거나**, **고개를 숙이거나 기울이면** 알려주는 웹앱입니다.
 얼굴 인식은 [MediaPipe Face Landmarker](https://ai.google.dev/edge/mediapipe/solutions/vision/face_landmarker)로 브라우저 안에서 처리하고, 영상은 어디에도 전송되지 않습니다.
 
