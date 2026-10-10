@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg"
+    android:fitsSystemWindows="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/app_name"
+            android:textColor="@color/text"
+            android:textSize="26sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="전면 카메라로 화면 거리와 고개 자세를 확인해서 알려줘요. 다른 앱을 쓰는 동안에도 계속 지켜봐요. 영상은 저장하거나 보내지 않아요."
+            android:textColor="@color/muted"
+            android:textSize="14sp" />
+
+        <LinearLayout
+            android:id="@+id/statusCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@color/idle_bg"
+            android:orientation="vertical"
+            android:padding="18dp">
+
+            <TextView
+                android:id="@+id/statusLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/statusDetail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textColor="@color/muted"
+                android:textSize="15sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/startButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:text="시작" />
+
+            <Button
+                android:id="@+id/calibrateButton"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:enabled="false"
+                android:text="기준 자세 저장" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@color/surface"
+            android:orientation="horizontal"
+            android:padding="16dp">
+
+                <LinearLayout style="@style/Metric">
+                    <TextView android:id="@+id/metricDistance" style="@style/MetricValue" />
+                    <TextView style="@style/MetricLabel" android:text="예상 거리" />
+                </LinearLayout>
+
+                <LinearLayout style="@style/Metric">
+                    <TextView android:id="@+id/metricPitch" style="@style/MetricValue" />
+                    <TextView style="@style/MetricLabel" android:text="고개 숙임" />
+                </LinearLayout>
+
+                <LinearLayout style="@style/Metric">
+                    <TextView android:id="@+id/metricRoll" style="@style/MetricValue" />
+                    <TextView style="@style/MetricLabel" android:text="고개 기울기" />
+                </LinearLayout>
+        </LinearLayout>
+
+        <TextView style="@style/SectionTitle" android:text="꼭 해주세요" />
+
+        <Button
+            android:id="@+id/overlayButton"
+            style="@style/Widget.Material3.Button.TonalButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/batteryButton"
+            style="@style/Widget.Material3.Button.TonalButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView style="@style/SectionTitle" android:text="설정" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/surface"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <LinearLayout style="@style/SettingRow">
+                <TextView style="@style/SettingLabel" android:text="기준 자세일 때 화면까지 거리 (cm)" />
+                <EditText
+                    android:id="@+id/setBaseDist"
+                    android:layout_width="88dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:importantForAutofill="no"
+                    android:inputType="number"
+                    android:maxLength="3"
+                    android:textColor="@color/text" />
+            </LinearLayout>
+
+            <LinearLayout style="@style/SettingRow">
+                <TextView style="@style/SettingLabel" android:text="이보다 가까우면 알림 (cm)" />
+                <EditText
+                    android:id="@+id/setMinDist"
+                    android:layout_width="88dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:importantForAutofill="no"
+                    android:inputType="number"
+                    android:maxLength="3"
+                    android:textColor="@color/text" />
+            </LinearLayout>
+
+            <LinearLayout style="@style/SettingRow">
+                <TextView style="@style/SettingLabel" android:text="고개 숙임 허용 각도 (°)" />
+                <EditText
+                    android:id="@+id/setPitch"
+                    android:layout_width="88dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:importantForAutofill="no"
+                    android:inputType="number"
+                    android:maxLength="3"
+                    android:textColor="@color/text" />
+            </LinearLayout>
+
+            <LinearLayout style="@style/SettingRow">
+                <TextView style="@style/SettingLabel" android:text="고개 기울기 허용 각도 (°)" />
+                <EditText
+                    android:id="@+id/setRoll"
+                    android:layout_width="88dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:importantForAutofill="no"
+                    android:inputType="number"
+                    android:maxLength="3"
+                    android:textColor="@color/text" />
+            </LinearLayout>
+
+            <LinearLayout style="@style/SettingRow">
+                <TextView style="@style/SettingLabel" android:text="나쁜 자세가 몇 초 이어지면 알릴까요" />
+                <EditText
+                    android:id="@+id/setHold"
+                    android:layout_width="88dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:importantForAutofill="no"
+                    android:inputType="number"
+                    android:maxLength="3"
+                    android:textColor="@color/text" />
+            </LinearLayout>
+
+            <LinearLayout style="@style/SettingRow">
+                <TextView style="@style/SettingLabel" android:text="같은 알림 다시 보내기까지 (초)" />
+                <EditText
+                    android:id="@+id/setCooldown"
+                    android:layout_width="88dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:importantForAutofill="no"
+                    android:inputType="number"
+                    android:maxLength="3"
+                    android:textColor="@color/text" />
+            </LinearLayout>
+
+            <CheckBox
+                android:id="@+id/setOverlay"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:text="다른 앱 위에 메시지 띄우기"
+                android:textColor="@color/text" />
+
+            <CheckBox
+                android:id="@+id/setVibrate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:text="진동"
+                android:textColor="@color/text" />
+
+            <CheckBox
+                android:id="@+id/setBreak"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:text="20-20-20 눈 휴식 알림 (20분마다)"
+                android:textColor="@color/text" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="거리는 기준 자세를 저장할 때의 얼굴 크기와 비교해서 계산해요. 정확하게 하려면 기준 자세를 저장할 때 실제 거리를 재서 첫 칸에 적어주세요. 측정 중에는 위쪽 알림창에 ‘자세 지킴이 측정 중’이 떠 있어요. 다른 앱이 카메라를 쓰는 동안(영상통화 등)에는 잠시 멈춰요."
+            android:textColor="@color/muted"
+            android:textSize="13sp" />
+    </LinearLayout>
+</ScrollView>
