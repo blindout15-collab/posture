@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>자세 지킴이</title>
+<meta name="description" content="카메라로 자세와 화면 거리를 확인해 알려주는 웹앱. 모든 처리는 기기 안에서만 이루어집니다.">
+<meta name="theme-color" content="#2f6f5e">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<style>
+:root {
+  --bg: #f6f5f1;
+  --surface: #ffffff;
+  --text: #1d2220;
+  --muted: #5f6a66;
+  --border: #e2e0d8;
+  --accent: #2f6f5e;
+  --accent-text: #ffffff;
+  --good: #2f7d4f;
+  --good-bg: #e5f3ea;
+  --warn: #a35a00;
+  --warn-bg: #fdf0dc;
+  --bad: #b3261e;
+  --bad-bg: #fbe4e2;
+  --idle-bg: #eceae4;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #141716;
+    --surface: #1d2220;
+    --text: #e9ecea;
+    --muted: #9aa5a0;
+    --border: #2e3532;
+    --accent: #5fb39b;
+    --accent-text: #0d1412;
+    --good: #7ccf9b;
+    --good-bg: #1c3326;
+    --warn: #f0b45a;
+    --warn-bg: #3a2c14;
+    --bad: #f28b82;
+    --bad-bg: #3d1d1b;
+    --idle-bg: #262c29;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #141716;
+  --surface: #1d2220;
+  --text: #e9ecea;
+  --muted: #9aa5a0;
+  --border: #2e3532;
+  --accent: #5fb39b;
+  --accent-text: #0d1412;
+  --good: #7ccf9b;
+  --good-bg: #1c3326;
+  --warn: #f0b45a;
+  --warn-bg: #3a2c14;
+  --bad: #f28b82;
+  --bad-bg: #3d1d1b;
+  --idle-bg: #262c29;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font: 16px/1.5 system-ui, -apple-system, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  padding: max(16px, env(safe-area-inset-top)) 16px max(24px, env(safe-area-inset-bottom));
+}
+main { max-width: 560px; margin: 0 auto; display: grid; gap: 16px; }
+header h1 { font-size: 1.4rem; margin: 0; }
+header p { margin: 4px 0 0; color: var(--muted); font-size: .9rem; }
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px;
+}
+.camera {
+  position: relative;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #000;
+  aspect-ratio: 4 / 3;
+}
+.camera video {
+  width: 100%; height: 100%; object-fit: cover;
+  transform: scaleX(-1);
+  display: block;
+}
+.camera .placeholder {
+  position: absolute; inset: 0;
+  display: grid; place-items: center;
+  color: #c9d1ce; text-align: center; padding: 16px;
+  font-size: .95rem;
+}
+.camera .placeholder[hidden] { display: none; }
+.camera.hidden-preview video { visibility: hidden; }
+.status {
+  border-radius: 14px;
+  padding: 18px 16px;
+  background: var(--idle-bg);
+  transition: background .2s;
+}
+.status .label { font-size: 1.3rem; font-weight: 700; }
+.status .detail { margin-top: 4px; color: var(--muted); }
+.status[data-level="good"] { background: var(--good-bg); }
+.status[data-level="good"] .label { color: var(--good); }
+.status[data-level="warn"] { background: var(--warn-bg); }
+.status[data-level="warn"] .label { color: var(--warn); }
+.status[data-level="bad"] { background: var(--bad-bg); }
+.status[data-level="bad"] .label { color: var(--bad); }
+.buttons { display: flex; flex-wrap: wrap; gap: 8px; }
+button {
+  font: inherit;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  padding: 10px 14px;
+  cursor: pointer;
+  min-height: 44px;
+}
+button.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-text); font-weight: 600; }
+button:disabled { opacity: .5; cursor: default; }
+.metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.metric { text-align: center; }
+.metric .v { font-size: 1.25rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.metric .k { font-size: .8rem; color: var(--muted); }
+h2 { font-size: 1rem; margin: 0 0 12px; }
+.settings { display: grid; gap: 12px; }
+.settings label { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 12px; font-size: .95rem; }
+.settings input[type="number"] {
+  width: 84px; font: inherit; padding: 6px 8px;
+  border-radius: 8px; border: 1px solid var(--border);
+  background: var(--bg); color: var(--text);
+}
+.settings input[type="checkbox"] { width: 22px; height: 22px; accent-color: var(--accent); }
+.note { font-size: .85rem; color: var(--muted); margin: 0; }
+details summary { cursor: pointer; font-weight: 600; }
+details[open] summary { margin-bottom: 12px; }
+.toast {
+  position: fixed; left: 16px; right: 16px; top: max(16px, env(safe-area-inset-top));
+  max-width: 528px; margin: 0 auto;
+  background: var(--bad); color: #fff;
+  border-radius: 12px; padding: 14px 16px;
+  font-weight: 600; font-size: 1.05rem;
+  box-shadow: 0 6px 24px rgba(0,0,0,.25);
+  transform: translateY(calc(-100% - 48px)); visibility: hidden;
+  transition: transform .25s, visibility .25s;
+  z-index: 10;
+}
+.toast.show { transform: none; visibility: visible; }
+.toast.info { background: var(--accent); color: var(--accent-text); }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>자세 지킴이</h1>
+    <p>카메라로 화면과의 거리와 고개 자세를 확인해서 알려줘요. 영상은 기기 밖으로 나가지 않아요.</p>
+  </header>
+
+  <div class="camera" id="cameraBox">
+    <video id="video" playsinline muted></video>
+    <div class="placeholder" id="placeholder">‘시작’을 누르면 카메라가 켜져요</div>
+  </div>
+
+  <div class="status" id="status" data-level="idle">
+    <div class="label" id="statusLabel">대기 중</div>
+    <div class="detail" id="statusDetail">시작한 다음 바른 자세로 앉아서 ‘기준 자세 저장’을 눌러주세요.</div>
+  </div>
+
+  <div class="buttons">
+    <button class="primary" id="startBtn">시작</button>
+    <button id="calibrateBtn" disabled>기준 자세 저장</button>
+    <button id="previewBtn" disabled>미리보기 숨기기</button>
+  </div>
+
+  <section class="card">
+    <h2>지금 상태</h2>
+    <div class="metrics">
+      <div class="metric"><div class="v" id="mDistance">–</div><div class="k">예상 거리</div></div>
+      <div class="metric"><div class="v" id="mPitch">–</div><div class="k">고개 숙임</div></div>
+      <div class="metric"><div class="v" id="mRoll">–</div><div class="k">고개 기울기</div></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>오늘 기록</h2>
+    <div class="metrics">
+      <div class="metric"><div class="v" id="sTime">0분</div><div class="k">측정 시간</div></div>
+      <div class="metric"><div class="v" id="sGood">–</div><div class="k">바른 자세 비율</div></div>
+      <div class="metric"><div class="v" id="sAlerts">0</div><div class="k">알림 횟수</div></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <details>
+      <summary>설정</summary>
+      <div class="settings">
+        <label>기준 자세일 때 화면까지 거리 (cm)<input type="number" id="setBaseDist" min="20" max="120" step="1"></label>
+        <label>이보다 가까우면 알림 (cm)<input type="number" id="setMinDist" min="15" max="100" step="1"></label>
+        <label>고개 숙임 허용 각도 (°)<input type="number" id="setPitch" min="5" max="45" step="1"></label>
+        <label>고개 기울기 허용 각도 (°)<input type="number" id="setRoll" min="5" max="45" step="1"></label>
+        <label>나쁜 자세가 몇 초 지속되면 알릴까요<input type="number" id="setHold" min="1" max="60" step="1"></label>
+        <label>같은 알림 다시 보내기까지 (초)<input type="number" id="setCooldown" min="5" max="600" step="5"></label>
+        <label>소리<input type="checkbox" id="setSound"></label>
+        <label>진동 (휴대폰)<input type="checkbox" id="setVibrate"></label>
+        <label>시스템 알림 (다른 창을 보고 있을 때)<input type="checkbox" id="setNotify"></label>
+        <label>20-20-20 눈 휴식 알림 (20분마다)<input type="checkbox" id="setBreak"></label>
+        <p class="note">거리는 기준 자세 저장 때의 얼굴 크기를 기준으로 계산해요. 정확하게 하려면 기준 자세를 저장할 때 실제 거리를 재서 첫 칸에 적어주세요. 권장 거리는 PC 모니터 50~70cm, 휴대폰 30~40cm예요.</p>
+      </div>
+    </details>
+  </section>
+
+  <p class="note">
+    PC에서는 이 탭을 열어둔 채 다른 창으로 작업해도 계속 측정해요. 휴대폰은 이 화면이 켜져 있을 때만 카메라가 동작해요 (운영체제 제한).
+    얼굴 인식 모델과 라이브러리를 처음에 한 번 내려받고, 이후 모든 분석은 기기 안에서 이루어져요.
+  </p>
+</main>
+
+<div class="toast" id="toast" role="alert"></div>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>

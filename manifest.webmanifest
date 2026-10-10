@@ -1,0 +1,10 @@
+{
+  "name": "자세 지킴이",
+  "short_name": "자세지킴이",
+  "description": "카메라로 자세와 화면 거리를 확인해 알려주는 웹앱",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f6f5f1",
+  "theme_color": "#2f6f5e",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}
