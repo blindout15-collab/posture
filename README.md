@@ -1,6 +1,7 @@
 # 자세 지킴이
 
-### 👉 [앱 열기: blindout15-collab.github.io/posture](https://blindout15-collab.github.io/posture/)
+### 👉 [웹앱 열기: blindout15-collab.github.io/posture](https://blindout15-collab.github.io/posture/)
+### 📱 [안드로이드 앱 내려받기 (APK)](https://github.com/blindout15-collab/posture/releases/latest/download/posture-guard.apk)
 
 웹캠이나 휴대폰 전면 카메라로 얼굴을 추적해서 **화면과 너무 가까워지거나**, **고개를 숙이거나 기울이면** 알려주는 웹앱입니다.
 얼굴 인식은 [MediaPipe Face Landmarker](https://ai.google.dev/edge/mediapipe/solutions/vision/face_landmarker)로 브라우저 안에서 처리하고, 영상은 어디에도 전송되지 않습니다.
@@ -27,3 +28,20 @@ python3 -m http.server 8000
 
 ### GitHub Pages 배포
 `main`에 푸시하면 `.github/workflows/pages.yml`이 배포합니다. 처음 한 번은 저장소의 **Settings → Pages → Source**를 **GitHub Actions**로 바꿔야 합니다.
+
+## 안드로이드 앱 (백그라운드에서도 동작)
+웹앱은 화면이 켜져 있을 때만 동작하지만, 안드로이드 앱은 **다른 앱을 쓰는 동안에도** 전면 카메라로 자세를 지켜보고 알림을 띄웁니다.
+
+### 설치
+1. 갤럭시탭/휴대폰에서 위의 **안드로이드 앱 내려받기** 링크를 엽니다.
+2. 내려받은 `posture-guard.apk`를 엽니다. "출처를 알 수 없는 앱" 경고가 나오면 **설정 → 이 출처 허용**을 켭니다.
+3. 앱을 열고 **시작** → 카메라·알림 권한 허용 → 바른 자세로 **기준 자세 저장**.
+4. 화면의 **꼭 해주세요** 두 가지를 눌러 허용합니다.
+   - **다른 앱 위에 표시**: 다른 앱을 쓰는 중에 화면 위쪽에 메시지 배너가 뜹니다.
+   - **배터리 최적화 제외**: 삼성 기기가 백그라운드에서 앱을 끄지 않게 합니다.
+
+측정 중에는 알림창에 "자세 지킴이 측정 중"이 떠 있고, 거기서 바로 **중지**할 수 있습니다.
+
+### 참고
+- 소스는 `android/` 폴더에 있고, `main`에 푸시하면 GitHub Actions가 APK를 빌드해 릴리스로 올립니다.
+- 업데이트할 때 지우고 다시 깔지 않아도 되도록 저장소에 들어 있는 디버그 서명 키(`android/app/debug.keystore`)로 서명합니다. 개인용 앱이라 이렇게 했고, 다른 사람에게 배포한다면 별도 키를 쓰는 게 좋습니다.
